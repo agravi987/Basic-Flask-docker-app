@@ -1,0 +1,23 @@
+# Python temporary files
+__pycache__
+*.pyc
+*.pyo
+
+# Virtual environment directory
+.venv
+venv
+.env
+
+# Version control
+.git
+.gitignore
+
+# IDE-specific directories (e.g., VS Code, PyCharm)
+.vscode
+.idea
+
+# Local build artifacts and secrets
+*/bin
+*/obj
+npm-debug.log
+secrets.dev.yaml

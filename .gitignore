@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+*venv*
+
+# IDE specific files (e.g. PyCharm, VS Code)
+.idea/
+.vscode/
+
+# Distribution / packaging
+build/
+dist/
+develop-eggs/
+*.egg-info/
+.installed.cfg
+
+# Unit test / coverage reports
+.coverage
+.tox/
+htmlcov/
+.pytest_cache/
+
+# Flask-specific
+instance/
+.webassets-cache
+
+# Sensitive configuration and runtime files
+.env
+.flaskenv
+secrets.toml
+pip-log.txt
