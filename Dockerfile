@@ -1,5 +1,5 @@
 # using lightweight alpine image for python 3.11
-FROM python:3.11-slim
+FROM python:3.11-alpine
 
 # setting working directory
 WORKDIR /app
