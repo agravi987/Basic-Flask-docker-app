@@ -71,7 +71,7 @@ newgrp docker
 docker --version
 ```
 
-![alt text](screenshots/docker-installed-sucessful.png)
+![docker installed and user added to docker group img](screenshots/docker-installed-sucessful.png)
 
 ## 7) Transfer code to EC2
 
@@ -82,6 +82,9 @@ sudo apt install -y git
 git clone <your-github-repo-url> rising-sun-blog
 cd rising-sun-blog
 ```
+
+![code from git](screenshots/code-from-git.png)
+
 
 Option B — SCP/WinSCP from Windows:
 
@@ -115,6 +118,7 @@ docker run -d \
   --restart unless-stopped \
   rising-sun-blog:latest
 ```
+![docker run](screenshots/docker-run.png)
 
 Notes:
 - Mapping `~/rising-sun-data/blog.db` to `/app/blog.db` preserves the SQLite DB across container restarts.
@@ -132,6 +136,9 @@ From your browser:
 ```
 http://<PUBLIC_IP>
 ```
+
+![curl verification](screenshots/final-verification-cli.png)
+![website verification](screenshots/final-verification.png)
 
 ## Troubleshooting
 
