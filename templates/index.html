@@ -1,9 +1,293 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Flask Docker App</title>
-</head>
-<body>
-    <h1>🚀 Flask App Running Inside Docker!</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Home - Rising Sun Blog{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+        color: white;
+        padding: 4rem 0;
+        text-align: center;
+        margin-bottom: 3rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero p {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Featured Posts Section */
+    .featured-section {
+        margin-bottom: 4rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        color: #333;
+        border-bottom: 3px solid #8b5cf6;
+        padding-bottom: 1rem;
+    }
+
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    /* Post Card */
+    .post-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .post-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .post-card-header {
+        background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .post-card-header.featured::before {
+        content: "⭐ FEATURED";
+        display: block;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+    }
+
+    .post-category {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .post-title {
+        color: white;
+        font-size: 1.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .post-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .post-excerpt {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    .post-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .post-author {
+        font-weight: 600;
+        color: #8b5cf6;
+    }
+
+    .btn-read-more {
+        align-self: flex-start;
+        margin-top: 1rem;
+    }
+
+    /* Blog Grid */
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 3rem 0;
+    }
+
+    .pagination a,
+    .pagination span {
+        padding: 0.7rem 1rem;
+        border: 2px solid #8b5cf6;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #8b5cf6;
+        transition: all 0.3s;
+    }
+
+    .pagination a:hover {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    .pagination .active {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    .pagination .disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #999;
+    }
+
+    .empty-state h2 {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .featured-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>☀️ Welcome to Rising Sun Blog</h1>
+        <p>Discover inspiring stories, insightful articles, and daily wisdom</p>
+        <a href="{{ url_for('create_post') }}" class="btn btn-primary">Start Writing Your Story</a>
+    </div>
+
+    <!-- Featured Posts -->
+    {% if featured_posts %}
+    <div class="featured-section">
+        <h2 class="section-title">⭐ Featured Posts</h2>
+        <div class="featured-grid">
+            {% for post in featured_posts %}
+            <div class="post-card">
+                <div class="post-card-header featured">
+                    <span class="post-category">{{ post.category }}</span>
+                    <h3 class="post-title">{{ post.title }}</h3>
+                </div>
+                <div class="post-body">
+                    <p class="post-excerpt">{{ post.get_preview() }}</p>
+                    <div class="post-meta">
+                        <span class="post-author">by {{ post.author }}</span>
+                        <span class="post-date">{{ post.get_formatted_date() }}</span>
+                    </div>
+                    <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-primary btn-sm btn-read-more">Read More →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- All Posts -->
+    <div class="featured-section">
+        <h2 class="section-title">📚 Latest Articles</h2>
+
+        {% if posts.items %}
+        <div class="blog-grid">
+            {% for post in posts.items %}
+            <div class="post-card">
+                <div class="post-card-header">
+                    <span class="post-category">{{ post.category }}</span>
+                    <h3 class="post-title">{{ post.title }}</h3>
+                </div>
+                <div class="post-body">
+                    <p class="post-excerpt">{{ post.get_preview() }}</p>
+                    <div class="post-meta">
+                        <span class="post-author">by {{ post.author }}</span>
+                        <span class="post-date">{{ post.get_formatted_date() }}</span>
+                    </div>
+                    <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-primary btn-sm btn-read-more">Read More →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if posts.pages > 1 %}
+        <div class="pagination">
+            {% if posts.has_prev %}
+                <a href="{{ url_for('home', page=posts.prev_num) }}">← Previous</a>
+            {% else %}
+                <span class="disabled">← Previous</span>
+            {% endif %}
+
+            {% for page_num in posts.iter_pages(left_edge=1, left_margin=1, right_margin=1, right_edge=1) %}
+                {% if page_num %}
+                    {% if page_num == posts.page %}
+                        <span class="active">{{ page_num }}</span>
+                    {% else %}
+                        <a href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    <span>...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if posts.has_next %}
+                <a href="{{ url_for('home', page=posts.next_num) }}">Next →</a>
+            {% else %}
+                <span class="disabled">Next →</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <h2>No blog posts yet</h2>
+            <p>Be the first to share your story!</p>
+            <a href="{{ url_for('create_post') }}" class="btn btn-primary" style="margin-top: 1rem;">Create Your First Post</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
