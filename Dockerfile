@@ -1,23 +1,36 @@
-# using lightweight alpine image for python 3.11
-FROM python:3.11-alpine
+# Stage 1: Build dependencies
+FROM python:3.11-alpine AS builder
 
-# setting working directory
 WORKDIR /app
 
-# install system dependencies
+# Install build dependencies
 RUN apk add --no-cache gcc musl-dev
 
-# copy requirements
+# Copy requirements
 COPY requirements.txt .
 
-# install python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Build wheels for the dependencies
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
-# copy application code
+
+# Stage 2: Final lightweight image
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+# Copy wheels from the builder stage
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+
+# Install packages using the built wheels
+RUN pip install --no-cache-dir /wheels/* \
+    && rm -rf /wheels
+
+# Copy the application code
 COPY . .
 
-# expose port
+# Expose port
 EXPOSE 5000
 
-# run flask app with gunicorn
+# Run flask app with gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "app:app"]
