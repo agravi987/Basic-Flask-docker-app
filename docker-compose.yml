@@ -2,16 +2,13 @@ version: '3.8'
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: raviag123/flask-app:latest  
     container_name: flask_app
     ports:
       - "5000:5000"
     environment:
       - FLASK_APP=app.py
     volumes:
-      # Map a volume for the SQLite database so it persists across container restarts
       - flask_db:/app/instance
     restart: unless-stopped
 
