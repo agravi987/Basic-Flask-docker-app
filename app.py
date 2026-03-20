@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from sqlalchemy import inspect
+
 import os
 
 app = Flask(__name__)
@@ -29,8 +31,12 @@ class BlogPost(db.Model):
         return self.created_at.strftime('%B %d, %Y')
 
 # Create database tables
+
 with app.app_context():
-    db.create_all()
+    inspector = inspect(db.engine)
+
+    if not inspector.has_table("blog_post"):
+        db.create_all()
 
 # Routes
 @app.route("/")
