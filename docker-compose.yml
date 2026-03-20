@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: raviag123/flask-app:latest  
+    image: ravi0706/flask-app:latest  
     container_name: flask_app
     ports:
       - "5000:5000"
