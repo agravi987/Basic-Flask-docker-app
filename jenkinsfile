@@ -1,0 +1,59 @@
+pipeline {
+    agent {label 'rithu'}
+
+    stages {
+        stage('Clone Code') {
+            steps {
+                echo '📦 Cloning code...'
+                git url: 'https://github.com/agravi987/Basic-Flask-docker-app.git', branch: "main"
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                echo '🐳 Building Docker image...'
+                sh 'docker build -t ravi-flask-app .'
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                echo '🚀 Pushing image to DockerHub...'
+        
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+        
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    
+                    docker tag ravi-flask-app $DOCKER_USER/flask-app:latest
+                    
+                    docker push $DOCKER_USER/flask-app:latest
+                    '''
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo '🚀 Deploying application...'
+        
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+        
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    
+                    docker-compose down || true
+                    docker-compose pull
+                    docker-compose up -d
+                    '''
+                }
+            }
+        }
+    }
+}
