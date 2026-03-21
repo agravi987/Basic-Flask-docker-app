@@ -1,0 +1,31 @@
+@Library('my-shared-lib') _
+
+pipeline {
+    agent {label 'rithu'}
+
+    stages {
+        stage('Clone Code') {
+            steps {
+                gitClone('https://github.com/agravi987/Basic-Flask-docker-app.git' , 'main') 
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                dockerBuild('ravi-flask-app') 
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                echo '🚀 Pushing image to DockerHub...'
+                dockerPush('docker-creds' , 'ravi-flask-app')
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo '🚀 Deploying application...'
+                deployApp('docker-creds') 
+            }
+        }
+    }
+}
